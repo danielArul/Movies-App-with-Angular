@@ -1,6 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { MovieDto } from '../models/movie';
+import {
+  Movie,
+  MovieCredits,
+  MovieDto,
+  MovieImages,
+  MovieVideoDto,
+  SimilarMovies
+} from '../models/movie';
 import { switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 
@@ -18,6 +25,36 @@ export class MoviesService {
       switchMap((res) => {
         return of(res.results.slice(0, count));
       })
+    );
+  }
+
+  getMovie(id: string) {
+    return this.http.get<Movie>(`${this.baseUrl}/movie/${id}?api_key=${this.apiKey}`);
+  }
+
+  getMovieVideos(id: string) {
+    return this.http
+      .get<MovieVideoDto>(`${this.baseUrl}/movie/${id}/videos?api_key=${this.apiKey}`)
+      .pipe(
+        switchMap((res) => {
+          return of(res.results);
+        })
+      );
+  }
+
+  getMovieImages(id: string) {
+    return this.http.get<MovieImages>(`${this.baseUrl}/movie/${id}/images?api_key=${this.apiKey}`);
+  }
+
+  getMovieCredits(id: string) {
+    return this.http.get<MovieCredits>(
+      `${this.baseUrl}/movie/${id}/credits?api_key=${this.apiKey}`
+    );
+  }
+
+  getSimilarMovies(id: string) {
+    return this.http.get<SimilarMovies>(
+      `${this.baseUrl}/movie/${id}/similar?api_key=${this.apiKey}`
     );
   }
 
